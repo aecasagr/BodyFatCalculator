@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Body Composition Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #151820;
+    --surface2: #1c202d;
+    --border: #252a38;
+    --accent: #00e5a0;
+    --accent2: #0095ff;
+    --accent3: #ff6b35;
+    --text: #e8eaf0;
+    --muted: #5a6070;
+    --label: #8892a0;
+    --mono: 'DM Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    padding: 40px 20px 80px;
+  }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0;
+  }
+
+  .wrapper { max-width: 860px; margin: 0 auto; position: relative; z-index: 1; }
+
+  header { margin-bottom: 48px; }
+
+  .badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 4px 10px;
+    border-radius: 2px;
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: #fff;
+  }
+
+  h1 span { color: var(--accent); }
+
+  .subtitle {
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 0.9rem;
+    font-family: var(--mono);
+  }
+
+  /* Grid layout */
+  .grid { display: grid; gap: 16px; }
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+  @media (max-width: 600px) {
+    .grid-2, .grid-4 { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* Card */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+
+  .card-title {
+    font-size: 11px;
+    font-family: var(--mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Gender toggle */
+  .gender-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .gender-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 14px;
+    border-radius: 8px;
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.02em;
+  }
+
+  .gender-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+  }
+
+  /* Inputs */
+  .field { display: flex; flex-direction: column; gap: 6px; }
+
+  label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--label);
+  }
+
+  input[type=number] {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 1rem;
+    padding: 12px 14px;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.2s;
+    -moz-appearance: textfield;
+  }
+
+  input[type=number]::-webkit-outer-spin-button,
+  input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+  input[type=number]:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0,229,160,0.08);
+  }
+
+  .unit {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* Skinfold site icons */
+  .sf-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+  .sf-field {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: border-color 0.2s;
+  }
+
+  .sf-field:focus-within { border-color: var(--accent2); }
+
+  .sf-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--label);
+  }
+
+  .sf-input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 1.3rem;
+    font-weight: 500;
+    padding: 4px 0;
+    width: 100%;
+    outline: none;
+    -moz-appearance: textfield;
+  }
+
+  .sf-input::-webkit-outer-spin-button,
+  .sf-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+  .sf-input:focus { border-bottom-color: var(--accent2); }
+
+  .sf-unit {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+  }
+
+  /* Total pill */
+  .total-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-top: 12px;
+  }
+
+  .total-label { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+
+  .total-value {
+    font-family: var(--mono);
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: var(--accent2);
+  }
+
+  /* Calculate button */
+  .calc-btn {
+    width: 100%;
+    background: var(--accent);
+    border: none;
+    border-radius: 10px;
+    color: #000;
+    font-family: var(--sans);
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 18px;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: all 0.2s;
+    margin-top: 8px;
+  }
+
+  .calc-btn:hover { background: #00ffc0; transform: translateY(-1px); }
+  .calc-btn:active { transform: translateY(0); }
+
+  /* Results */
+  #results {
+    display: none;
+    animation: fadeUp 0.4s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  @media (max-width: 500px) { .results-grid { grid-template-columns: 1fr; } }
+
+  .result-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .result-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+
+  .result-card.bf::before { background: linear-gradient(90deg, var(--accent2), var(--accent)); }
+  .result-card.bmi::before { background: linear-gradient(90deg, var(--accent3), #ffcc00); }
+  .result-card.ibw::before { background: linear-gradient(90deg, var(--accent), #00c8ff); }
+  .result-card.lbm::before { background: linear-gradient(90deg, #a855f7, var(--accent2)); }
+
+  .result-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .result-value {
+    font-family: var(--mono);
+    font-size: 2.4rem;
+    font-weight: 500;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .result-unit {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .result-tag {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  /* Category colors */
+  .cat-slim { background: rgba(0,229,160,0.15); color: var(--accent); }
+  .cat-ideal { background: rgba(0,149,255,0.15); color: var(--accent2); }
+  .cat-above { background: rgba(255,107,53,0.15); color: var(--accent3); }
+  .cat-obese { background: rgba(255,50,50,0.15); color: #ff5050; }
+  .cat-under { background: rgba(255,200,0,0.15); color: #ffcc00; }
+  .cat-normal { background: rgba(0,229,160,0.15); color: var(--accent); }
+  .cat-over { background: rgba(255,107,53,0.15); color: var(--accent3); }
+
+  /* Breakdown */
+  .breakdown {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 16px;
+  }
+
+  .breakdown-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  .breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 0.85rem;
+  }
+
+  .breakdown-row:last-child { border-bottom: none; }
+  .breakdown-key { color: var(--muted); }
+  .breakdown-val { color: var(--text); font-weight: 500; }
+
+  /* Bar chart */
+  .bf-bar-wrap { margin-top: 20px; }
+  .bf-bar-label { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .bf-bar {
+    height: 8px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .bf-bar-fill {
+    height: 100%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Error */
+  .error-msg {
+    background: rgba(255,50,50,0.1);
+    border: 1px solid rgba(255,50,50,0.3);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: #ff7070;
+    display: none;
+    margin-top: 8px;
+  }
+
+  /* Section spacing */
+  .section { margin-bottom: 24px; }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 32px 0;
+  }
+
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <header>
+    <div class="badge">Clinical Tool</div>
+    <h1>Body <span>Composition</span><br>Calculator</h1>
+    <p class="subtitle">// Durnin & Womersley 4-site skinfold · BMI · Ideal Body Weight</p>
+  </header>
+
+  <!-- INPUT CARD -->
+  <div class="card" style="margin-bottom: 16px;">
+    <div class="card-title">01 — Patient Profile</div>
+
+    <div class="section">
+      <div class="gender-toggle">
+        <button class="gender-btn active" id="btnMale" onclick="setGender('male')">♂ Male</button>
+        <button class="gender-btn" id="btnFemale" onclick="setGender('female')">♀ Female</button>
+      </div>
+    </div>
+
+    <div class="section grid grid-2">
+      <div class="field">
+        <label>Age</label>
+        <input type="number" id="age" min="16" max="99" placeholder="e.g. 35">
+        <span class="unit">years</span>
+      </div>
+      <div class="field">
+        <label>Weight</label>
+        <input type="number" id="weight" step="0.1" placeholder="e.g. 80.0">
+        <span class="unit">kilograms</span>
+      </div>
+      <div class="field">
+        <label>Height</label>
+        <input type="number" id="height" step="0.1" placeholder="e.g. 175">
+        <span class="unit">centimetres</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom: 16px;">
+    <div class="card-title">02 — Skinfold Measurements (Right Side)</div>
+    <div class="sf-grid">
+      <div class="sf-field">
+        <div class="sf-label">Triceps</div>
+        <input class="sf-input" type="number" id="sf1" step="0.1" placeholder="0.0" oninput="updateTotal()">
+        <div class="sf-unit">mm</div>
+      </div>
+      <div class="sf-field">
+        <div class="sf-label">Biceps</div>
+        <input class="sf-input" type="number" id="sf2" step="0.1" placeholder="0.0" oninput="updateTotal()">
+        <div class="sf-unit">mm</div>
+      </div>
+      <div class="sf-field">
+        <div class="sf-label">Subscapular</div>
+        <input class="sf-input" type="number" id="sf3" step="0.1" placeholder="0.0" oninput="updateTotal()">
+        <div class="sf-unit">mm</div>
+      </div>
+      <div class="sf-field">
+        <div class="sf-label">Suprailiac</div>
+        <input class="sf-input" type="number" id="sf4" step="0.1" placeholder="0.0" oninput="updateTotal()">
+        <div class="sf-unit">mm</div>
+      </div>
+    </div>
+
+    <div class="total-row">
+      <span class="total-label">Total Skinfold</span>
+      <span class="total-value" id="totalDisplay">—</span>
+    </div>
+  </div>
+
+  <div class="error-msg" id="errorMsg"></div>
+
+  <button class="calc-btn" onclick="calculate()">Calculate Body Composition →</button>
+
+  <div class="divider"></div>
+
+  <!-- RESULTS -->
+  <div id="results">
+    <div class="results-grid">
+
+      <div class="result-card bf">
+        <div class="result-label">Estimated Body Fat</div>
+        <div class="result-value" id="rBf" style="color: var(--accent2)">—</div>
+        <div class="result-unit">percent</div>
+        <div id="rBfTag" class="result-tag">—</div>
+        <div class="bf-bar-wrap">
+          <div class="bf-bar-label">0% ─────────────────────── 50%</div>
+          <div class="bf-bar"><div class="bf-bar-fill" id="bfBarFill" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <div class="result-card bmi">
+        <div class="result-label">BMI</div>
+        <div class="result-value" id="rBmi" style="color: #ffcc00">—</div>
+        <div class="result-unit">kg / m²</div>
+        <div id="rBmiTag" class="result-tag">—</div>
+      </div>
+
+      <div class="result-card ibw">
+        <div class="result-label">Ideal Body Weight</div>
+        <div class="result-value" id="rIbw" style="color: var(--accent)">—</div>
+        <div class="result-unit">kilograms · Devine formula</div>
+      </div>
+
+      <div class="result-card lbm">
+        <div class="result-label">Lean Body Mass</div>
+        <div class="result-value" id="rLbm" style="color: #a855f7">—</div>
+        <div class="result-unit">kilograms</div>
+      </div>
+
+    </div>
+
+    <div class="breakdown">
+      <div class="breakdown-title">// Calculation Breakdown</div>
+      <div class="breakdown-row"><span class="breakdown-key">Total Skinfold</span><span class="breakdown-val" id="bTotal">—</span></div>
+      <div class="breakdown-row"><span class="breakdown-key">Lower Bracket (mm → %BF)</span><span class="breakdown-val" id="bLower">—</span></div>
+      <div class="breakdown-row"><span class="breakdown-key">Upper Bracket (mm → %BF)</span><span class="breakdown-val" id="bUpper">—</span></div>
+      <div class="breakdown-row"><span class="breakdown-key">Interpolation Step</span><span class="breakdown-val" id="bStep">—</span></div>
+      <div class="breakdown-row"><span class="breakdown-key">Body Fat Mass</span><span class="breakdown-val" id="bFatMass">—</span></div>
+      <div class="breakdown-row"><span class="breakdown-key">Lean Mass</span><span class="breakdown-val" id="bLeanMass">—</span></div>
+      <div class="breakdown-row"><span class="breakdown-key">BMI</span><span class="breakdown-val" id="bBmi">—</span></div>
+      <div class="breakdown-row"><span class="breakdown-key">Ideal Body Weight (Devine)</span><span class="breakdown-val" id="bIbw">—</span></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ─── DATA ──────────────────────────────────────────────────────────────────
+const SKINFOLD = {
+  male: {
+    // skinfold_mm: [17-29, 30-39, 40-49, 50+]
+    15:  [4.8,   null,  null,  null],
+    20:  [8.1,   12.2,  12.2,  12.6],
+    25:  [10.5,  14.2,  15.0,  15.6],
+    30:  [12.9,  16.2,  17.7,  18.6],
+    35:  [14.7,  17.7,  19.6,  20.8],
+    40:  [16.4,  19.2,  21.4,  22.9],
+    45:  [17.7,  20.4,  23.0,  24.7],
+    50:  [19.0,  21.5,  24.6,  26.5],
+    55:  [20.1,  22.5,  25.9,  27.9],
+    60:  [21.2,  23.5,  27.1,  29.2],
+    65:  [22.2,  24.3,  28.2,  30.4],
+    70:  [23.1,  25.1,  29.3,  31.6],
+    75:  [24.0,  25.9,  30.3,  32.7],
+    80:  [24.8,  26.6,  31.2,  33.8],
+    85:  [25.5,  27.2,  32.1,  34.8],
+    90:  [26.2,  27.8,  33.0,  35.8],
+    95:  [26.9,  28.4,  33.7,  36.6],
+    100: [27.6,  29.0,  34.4,  37.4],
+    105: [28.2,  29.6,  35.1,  38.2],
+    110: [28.8,  30.1,  35.8,  39.0],
+    115: [29.4,  30.6,  36.4,  39.7],
+    120: [30.0,  31.1,  37.0,  40.4],
+    125: [30.5,  31.5,  37.6,  41.1],
+    130: [31.0,  31.9,  38.2,  41.8],
+    135: [31.5,  32.3,  38.7,  42.4],
+    140: [32.0,  32.7,  39.2,  43.0],
+    145: [32.5,  33.1,  39.7,  43.6],
+    150: [32.9,  33.5,  40.2,  44.1],
+    155: [33.3,  33.9,  40.7,  44.6],
+    160: [33.7,  34.3,  41.3,  45.1],
+    165: [34.1,  34.6,  41.6,  45.6],
+    170: [34.5,  34.8,  42.0,  46.1]
+  },
+  female: {
+    // skinfold_mm: [16-29, 30-39, 40-49, 50+]
+    15:  [10.5,  null,  null,  null],
+    20:  [14.1,  17.0,  19.8,  21.4],
+    25:  [16.8,  19.4,  22.2,  24.0],
+    30:  [19.5,  21.8,  24.5,  26.6],
+    35:  [21.5,  23.7,  26.4,  28.5],
+    40:  [23.4,  25.5,  28.2,  30.3],
+    45:  [25.0,  26.9,  29.6,  31.9],
+    50:  [26.5,  28.2,  31.0,  33.4],
+    55:  [27.8,  29.4,  32.1,  34.6],
+    60:  [29.1,  30.6,  33.2,  35.7],
+    65:  [30.2,  31.6,  34.1,  36.7],
+    70:  [31.2,  32.5,  35.0,  37.7],
+    75:  [32.2,  33.4,  35.9,  38.7],
+    80:  [33.1,  34.3,  36.7,  39.6],
+    85:  [34.0,  35.1,  37.5,  40.4],
+    90:  [34.8,  35.8,  38.3,  41.2],
+    95:  [35.6,  36.5,  39.0,  41.9],
+    100: [36.4,  37.2,  39.7,  42.6],
+    105: [37.1,  37.9,  40.4,  43.3],
+    110: [37.8,  38.6,  41.0,  43.9],
+    115: [38.4,  39.1,  41.5,  44.5],
+    120: [39.0,  39.6,  42.0,  45.1],
+    125: [39.6,  40.1,  42.5,  45.7],
+    130: [40.2,  40.6,  43.0,  46.2],
+    135: [40.8,  41.1,  43.5,  46.7],
+    140: [41.3,  41.6,  44.0,  47.2],
+    145: [41.8,  42.1,  44.5,  47.7],
+    150: [42.3,  42.6,  45.0,  48.2],
+    155: [42.8,  43.1,  45.4,  48.7],
+    160: [43.3,  43.6,  45.8,  49.2],
+    165: [43.7,  44.0,  46.2,  49.6],
+    170: [44.1,  44.4,  46.6,  50.0]
+  }
+};
+
+// Age column indices
+// male: 17-29 → 0, 30-39 → 1, 40-49 → 2, 50+ → 3
+// female: 16-29 → 0, 30-39 → 1, 40-49 → 2, 50+ → 3
+function getAgeCol(age, gender) {
+  if (gender === 'male') {
+    if (age <= 29) return 0;
+    if (age <= 39) return 1;
+    if (age <= 49) return 2;
+    return 3;
+  } else {
+    if (age <= 29) return 0;
+    if (age <= 39) return 1;
+    if (age <= 49) return 2;
+    return 3;
+  }
+}
+
+// Body fat classification from the image
+// male: { ageGroup: [[slim_max, ideal_max, above_max], ...] }
+// Using: Slim ≤, Ideal, Above Avg, Obese ≥
+const BF_NORMS = {
+  male: [
+    { range: [16,19], slim: 5.3,  ideal: [5.4,10.6],  above: [10.7,15.8], obese: 21.2 },
+    { range: [20,29], slim: 7.3,  ideal: [7.4,12.8],  above: [12.9,18.4], obese: 24.0 },
+    { range: [30,39], slim: 13.6, ideal: [13.7,17.9], above: [18.0,22.6], obese: 26.7 },
+    { range: [40,49], slim: 15.2, ideal: [15.3,20.6], above: [20.7,26.0], obese: 31.5 },
+    { range: [50,99], slim: 16.1, ideal: [16.2,22.1], above: [22.2,28.1], obese: 34.2 }
+  ],
+  female: [
+    { range: [16,19], slim: 16.6, ideal: [16.7,22.1], above: [22.2,27.8], obese: 33.3 },
+    { range: [20,29], slim: 17.1, ideal: [17.2,22.6], above: [22.7,28.3], obese: 33.8 },
+    { range: [30,39], slim: 19.7, ideal: [19.8,25.1], above: [25.2,30.6], obese: 36.0 },
+    { range: [40,49], slim: 23.9, ideal: [24.0,29.0], above: [29.1,34.3], obese: 39.4 },
+    { range: [50,99], slim: 27.1, ideal: [27.2,32.5], above: [32.6,38.0], obese: 43.4 }
+  ]
+};
+
+function classifyBF(bf, age, gender) {
+  const norms = BF_NORMS[gender];
+  const norm = norms.find(n => age >= n.range[0] && age <= n.range[1]) || norms[norms.length-1];
+  if (bf <= norm.slim) return { label: 'Slim', cls: 'cat-slim' };
+  if (bf <= norm.ideal[1]) return { label: 'Ideal', cls: 'cat-ideal' };
+  if (bf <= norm.above[1]) return { label: 'Above Average', cls: 'cat-above' };
+  return { label: 'Obese', cls: 'cat-obese' };
+}
+
+function classifyBMI(bmi) {
+  if (bmi < 18.5) return { label: 'Underweight', cls: 'cat-under' };
+  if (bmi < 25.0) return { label: 'Normal Weight', cls: 'cat-normal' };
+  if (bmi < 30.0) return { label: 'Overweight', cls: 'cat-over' };
+  return { label: 'Obese', cls: 'cat-obese' };
+}
+
+// ─── STATE ─────────────────────────────────────────────────────────────────
+let gender = 'male';
+
+function setGender(g) {
+  gender = g;
+  document.getElementById('btnMale').classList.toggle('active', g === 'male');
+  document.getElementById('btnFemale').classList.toggle('active', g === 'female');
+}
+
+function updateTotal() {
+  const vals = ['sf1','sf2','sf3','sf4'].map(id => parseFloat(document.getElementById(id).value) || 0);
+  const total = vals.reduce((a,b) => a+b, 0);
+  document.getElementById('totalDisplay').textContent = total > 0 ? total.toFixed(1) + ' mm' : '—';
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function hideError() {
+  document.getElementById('errorMsg').style.display = 'none';
+}
+
+function calculate() {
+  hideError();
+
+  const age    = parseInt(document.getElementById('age').value);
+  const weight = parseFloat(document.getElementById('weight').value);
+  const height = parseFloat(document.getElementById('height').value);
+  const sf1    = parseFloat(document.getElementById('sf1').value);
+  const sf2    = parseFloat(document.getElementById('sf2').value);
+  const sf3    = parseFloat(document.getElementById('sf3').value);
+  const sf4    = parseFloat(document.getElementById('sf4').value);
+
+  if (!age || !weight || !height || isNaN(sf1) || isNaN(sf2) || isNaN(sf3) || isNaN(sf4)) {
+    showError('Please fill in all fields before calculating.');
+    return;
+  }
+  if (age < 16 || age > 100) { showError('Age must be between 16 and 100.'); return; }
+  if (height < 100 || height > 250) { showError('Height seems out of range (100–250 cm).'); return; }
+  if (weight < 30 || weight > 300) { showError('Weight seems out of range.'); return; }
+
+  const totalSF = sf1 + sf2 + sf3 + sf4;
+  const ageCol  = getAgeCol(age, gender);
+  const table   = SKINFOLD[gender];
+  const sfKeys  = Object.keys(table).map(Number).sort((a,b) => a-b);
+
+  // Find the two bracketing skinfold rows
+  const maxSF = sfKeys[sfKeys.length - 1];
+  const minSF = sfKeys[0];
+
+  let lowerSF, upperSF;
+  if (totalSF <= minSF) {
+    lowerSF = minSF;
+    upperSF = sfKeys[1];
+  } else if (totalSF >= maxSF) {
+    lowerSF = sfKeys[sfKeys.length - 2];
+    upperSF = maxSF;
+  } else {
+    // Floor to nearest 5
+    lowerSF = Math.floor(totalSF / 5) * 5;
+    upperSF = lowerSF + 5;
+    if (!table[lowerSF]) lowerSF = sfKeys.find(k => k >= lowerSF);
+    if (!table[upperSF]) upperSF = sfKeys.find(k => k >= upperSF);
+  }
+
+  const bfLow  = table[lowerSF]?.[ageCol];
+  const bfHigh = table[upperSF]?.[ageCol];
+
+  if (bfLow == null || bfHigh == null) {
+    showError(`No data available for this age group and skinfold range (${lowerSF}–${upperSF} mm).`);
+    return;
+  }
+
+  // Interpolate
+  const range    = bfHigh - bfLow;          // BF% difference across 5mm bracket
+  const stepPerMm = range / 5;              // BF% per mm
+  const offset    = totalSF - lowerSF;      // mm above lower bracket
+  const bf        = bfLow + (stepPerMm * offset);
+
+  // BMI
+  const heightM = height / 100;
+  const bmi = weight / (heightM * heightM);
+
+  // Ideal Body Weight (Devine)
+  const heightIn = height / 2.54;
+  let ibw;
+  if (gender === 'male') {
+    ibw = 50 + 2.3 * (heightIn - 60);
+  } else {
+    ibw = 45.5 + 2.3 * (heightIn - 60);
+  }
+  ibw = Math.max(ibw, 30);
+
+  // Lean body mass
+  const fatMass  = weight * (bf / 100);
+  const leanMass = weight - fatMass;
+
+  // Classify
+  const bfCat  = classifyBF(bf, age, gender);
+  const bmiCat = classifyBMI(bmi);
+
+  // Display
+  document.getElementById('rBf').textContent  = bf.toFixed(2) + '%';
+  document.getElementById('rBmi').textContent  = bmi.toFixed(1);
+  document.getElementById('rIbw').textContent  = ibw.toFixed(1) + ' kg';
+  document.getElementById('rLbm').textContent  = leanMass.toFixed(1) + ' kg';
+
+  const bfTag = document.getElementById('rBfTag');
+  bfTag.textContent  = bfCat.label;
+  bfTag.className    = 'result-tag ' + bfCat.cls;
+
+  const bmiTag = document.getElementById('rBmiTag');
+  bmiTag.textContent = bmiCat.label;
+  bmiTag.className   = 'result-tag ' + bmiCat.cls;
+
+  // Bar (cap at 50% for display)
+  document.getElementById('bfBarFill').style.width = Math.min(bf / 50 * 100, 100) + '%';
+
+  // Breakdown
+  document.getElementById('bTotal').textContent    = totalSF.toFixed(1) + ' mm';
+  document.getElementById('bLower').textContent    = `${lowerSF} mm → ${bfLow.toFixed(1)}% BF`;
+  document.getElementById('bUpper').textContent    = `${upperSF} mm → ${bfHigh.toFixed(1)}% BF`;
+  document.getElementById('bStep').textContent     = `+${stepPerMm.toFixed(3)}% per mm above ${lowerSF} mm`;
+  document.getElementById('bFatMass').textContent  = fatMass.toFixed(2) + ' kg';
+  document.getElementById('bLeanMass').textContent = leanMass.toFixed(2) + ' kg';
+  document.getElementById('bBmi').textContent      = `${bmi.toFixed(2)} kg/m² — ${bmiCat.label}`;
+  document.getElementById('bIbw').textContent      = ibw.toFixed(1) + ' kg';
+
+  const res = document.getElementById('results');
+  res.style.display = 'block';
+  setTimeout(() => res.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+</script>
+</body>
+</html>
