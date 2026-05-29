@@ -267,6 +267,14 @@
     border-radius: 8px; padding: 12px 16px; font-family: var(--mono);
     font-size: 0.85rem; color: #dc2626; display: none; margin-top: 8px;
   }
+  .alt-unit {
+    font-size: 0.55em;
+    color: var(--muted);
+    font-weight: 400;
+    display: block;
+    margin-top: 4px;
+    letter-spacing: 0;
+  }
   .divider { height: 1px; background: var(--border); margin: 32px 0; }
 
   /* ── Results-level fragility reminder ── */
@@ -292,6 +300,26 @@
     margin-bottom: 8px;
     opacity: 1;
   }
+
+  /* ── Quick Converter ── */
+  .converter-strip {
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: 12px; padding: 16px 20px; margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+  .conv-title { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent2); margin-bottom: 12px; }
+  .conv-row { display: flex; align-items: center; gap: 10px; }
+  .conv-group { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+  .conv-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--label); }
+  .conv-input {
+    background: var(--surface2); border: 1.5px solid var(--border); border-radius: 8px;
+    color: var(--text); font-family: var(--mono); font-size: 0.95rem;
+    padding: 9px 12px; width: 100%; outline: none; transition: border-color 0.2s;
+    -moz-appearance: textfield;
+  }
+  .conv-input::-webkit-outer-spin-button, .conv-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+  .conv-input:focus { border-color: var(--accent2); box-shadow: 0 0 0 3px rgba(0,113,227,0.10); }
+  .conv-arrow { font-size: 1.1rem; color: var(--muted); flex-shrink: 0; margin-top: 18px; }
 </style>
 </head>
 <body>
@@ -308,7 +336,7 @@
     <div class="fragility-content">
       <div class="fragility-heading">⚠ Always Think About the Whole Person First</div>
       <div class="fragility-text">
-        These numbers are a <strong>starting point for a conversation,  not a prescription.</strong> Always look at the full picture before saying anything about weight.<br><br>
+        These numbers are a <strong>starting point for a conversation — not a prescription.</strong> Always look at the full picture before saying anything about weight.<br><br>
         For <strong>older or more fragile patients</strong>, telling them to lose weight can actually do more harm than good. Losing weight at the wrong time can mean losing muscle, feeling weaker, and increasing the risk of falls or illness. <strong>A slightly higher weight is often perfectly fine — and sometimes even protective — in older adults.</strong> Use your judgement. The numbers are a guide, not the goal.
       </div>
     </div>
@@ -320,6 +348,34 @@
     <div class="unit-pill">
       <button class="unit-pill-btn active" id="btnKg"  onclick="setUnit('kg')">kg / cm</button>
       <button class="unit-pill-btn"        id="btnLbs" onclick="setUnit('lbs')">lbs / in</button>
+    </div>
+  </div>
+
+
+  <!-- Live unit converter -->
+  <div class="converter-strip" id="converterStrip">
+    <div class="conv-title">Quick Converter</div>
+    <div class="conv-row">
+      <div class="conv-group">
+        <label class="conv-label">kg</label>
+        <input class="conv-input" type="number" id="convKg" step="0.1" placeholder="—" oninput="convFrom('kg')">
+      </div>
+      <div class="conv-arrow">⇄</div>
+      <div class="conv-group">
+        <label class="conv-label">lbs</label>
+        <input class="conv-input" type="number" id="convLbs" step="0.1" placeholder="—" oninput="convFrom('lbs')">
+      </div>
+    </div>
+    <div class="conv-row" style="margin-top:10px">
+      <div class="conv-group">
+        <label class="conv-label">cm</label>
+        <input class="conv-input" type="number" id="convCm" step="0.1" placeholder="—" oninput="convFrom('cm')">
+      </div>
+      <div class="conv-arrow">⇄</div>
+      <div class="conv-group">
+        <label class="conv-label">inches</label>
+        <input class="conv-input" type="number" id="convIn" step="0.1" placeholder="—" oninput="convFrom('in')">
+      </div>
     </div>
   </div>
 
@@ -556,9 +612,16 @@ function updateTotal() {
   document.getElementById('totalDisplay').textContent = total > 0 ? total.toFixed(1)+' mm' : '—';
 }
 function fmt(kg, dec=1) {
+  const kgStr  = kg.toFixed(dec) + ' kg';
+  const lbsStr = (kg * 2.20462).toFixed(dec) + ' lbs';
   return unit === 'lbs'
-    ? (kg * 2.20462).toFixed(dec) + ' lbs'
-    : kg.toFixed(dec) + ' kg';
+    ? lbsStr + ' <span class="alt-unit">(' + kgStr + ')</span>'
+    : kgStr  + ' <span class="alt-unit">(' + lbsStr + ')</span>';
+}
+function fmtPlain(kg, dec=1) {
+  const kgStr  = kg.toFixed(dec) + ' kg';
+  const lbsStr = (kg * 2.20462).toFixed(dec) + ' lbs';
+  return unit === 'lbs' ? lbsStr + ' (' + kgStr + ')' : kgStr + ' (' + lbsStr + ')';
 }
 function showError(msg) { const e=document.getElementById('errorMsg'); e.textContent=msg; e.style.display='block'; }
 function hideError()    { document.getElementById('errorMsg').style.display='none'; }
@@ -661,16 +724,16 @@ function calculate() {
   // Render
   document.getElementById('rBf').textContent  = bf.toFixed(2)+'%';
   document.getElementById('rBmi').textContent = bmi.toFixed(1);
-  document.getElementById('rIbw').textContent = fmt(ibw);
-  document.getElementById('rLbm').textContent = fmt(leanMass);
+  document.getElementById('rIbw').innerHTML = fmt(ibw);
+  document.getElementById('rLbm').innerHTML = fmt(leanMass);
   const bfTag = document.getElementById('rBfTag');
   bfTag.textContent=bfCat.label; bfTag.className='result-tag '+bfCat.cls;
   const bmiTag = document.getElementById('rBmiTag');
   bmiTag.textContent=bmiCat.label; bmiTag.className='result-tag '+bmiCat.cls;
   document.getElementById('bfBarFill').style.width = Math.min(bf/50*100,100)+'%';
-  document.getElementById('iwtLo').textContent    = fmt(iwtLo_kg);
+  document.getElementById('iwtLo').innerHTML    = fmt(iwtLo_kg);
   document.getElementById('iwtLoSub').textContent = `at ${idealBfLo}% BF (leaner end)`;
-  document.getElementById('iwtHi').textContent    = fmt(iwtHi_kg);
+  document.getElementById('iwtHi').innerHTML    = fmt(iwtHi_kg);
   document.getElementById('iwtHiSub').textContent = `at ${idealBfHi}% BF (easier goal)`;
   let deltaHtml='';
   if (deltaHi > 0) {
@@ -686,14 +749,32 @@ function calculate() {
   document.getElementById('bLower').textContent    = `${lowerSF} mm → ${bfLow.toFixed(1)}% BF`;
   document.getElementById('bUpper').textContent    = `${upperSF} mm → ${bfHigh.toFixed(1)}% BF`;
   document.getElementById('bStep').textContent     = `+${stepPerMm.toFixed(3)}% per mm above ${lowerSF} mm`;
-  document.getElementById('bFatMass').textContent  = `${fmt(fatMass)} (${bf.toFixed(1)}%)`;
-  document.getElementById('bLeanMass').textContent = fmt(leanMass);
+  document.getElementById('bFatMass').textContent  = `${fmtPlain(fatMass)} (${bf.toFixed(1)}%)`;
+  document.getElementById('bLeanMass').textContent = fmtPlain(leanMass);
   document.getElementById('bBmi').textContent      = `${bmi.toFixed(2)} kg/m² — ${bmiCat.label}`;
-  document.getElementById('bIbw').textContent      = fmt(ibw);
-  document.getElementById('bIwt').textContent      = `${fmt(iwtHi_kg)} – ${fmt(iwtLo_kg)}`;
+  document.getElementById('bIbw').textContent      = fmtPlain(ibw);
+  document.getElementById('bIwt').textContent      = `${fmtPlain(iwtHi_kg)} – ${fmtPlain(iwtLo_kg)}`;
   const res = document.getElementById('results');
   res.style.display='block';
   setTimeout(()=>res.scrollIntoView({behavior:'smooth',block:'start'}),100);
+}
+
+// ─── QUICK CONVERTER ───────────────────────────────────────────────────────
+function convFrom(src) {
+  const kgEl  = document.getElementById('convKg');
+  const lbsEl = document.getElementById('convLbs');
+  const cmEl  = document.getElementById('convCm');
+  const inEl  = document.getElementById('convIn');
+  const v = parseFloat(src === 'kg' ? kgEl.value : src === 'lbs' ? lbsEl.value : src === 'cm' ? cmEl.value : inEl.value);
+  if (isNaN(v)) {
+    if (src==='kg') lbsEl.value=''; if (src==='lbs') kgEl.value='';
+    if (src==='cm') inEl.value=''; if (src==='in') cmEl.value='';
+    return;
+  }
+  if      (src==='kg')  lbsEl.value = (v * 2.20462).toFixed(2);
+  else if (src==='lbs') kgEl.value  = (v / 2.20462).toFixed(2);
+  else if (src==='cm')  inEl.value  = (v / 2.54).toFixed(2);
+  else if (src==='in')  cmEl.value  = (v * 2.54).toFixed(2);
 }
 </script>
 </body>
