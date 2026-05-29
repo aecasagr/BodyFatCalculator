@@ -7,23 +7,23 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0d0f14;
-    --surface: #151820;
-    --surface2: #1c202d;
-    --border: #252a38;
-    --accent: #00e5a0;
-    --accent2: #0095ff;
-    --accent3: #ff6b35;
-    --warn: #f59e0b;
-    --text: #e8eaf0;
-    --muted: #5a6070;
-    --label: #8892a0;
+    --bg: #f4f6fb;
+    --surface: #ffffff;
+    --surface2: #f0f3f9;
+    --border: #dde2ee;
+    --accent: #00a870;
+    --accent2: #0071e3;
+    --accent3: #e8520a;
+    --warn: #d97706;
+    --text: #1a1d26;
+    --muted: #8892a0;
+    --label: #5a6070;
     --mono: 'DM Mono', monospace;
     --sans: 'Syne', sans-serif;
+    --shadow: 0 2px 12px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.05);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
   body {
     background: var(--bg);
     color: var(--text);
@@ -31,18 +31,14 @@
     min-height: 100vh;
     padding: 40px 20px 80px;
   }
-
   body::before {
     content: '';
     position: fixed; inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.018'/%3E%3C/svg%3E");
     pointer-events: none; z-index: 0;
   }
-
   .wrapper { max-width: 860px; margin: 0 auto; position: relative; z-index: 1; }
-
   header { margin-bottom: 48px; }
-
   .badge {
     display: inline-block;
     font-family: var(--mono);
@@ -50,22 +46,20 @@
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: var(--accent);
-    border: 1px solid var(--accent);
+    border: 1.5px solid var(--accent);
     padding: 4px 10px;
     border-radius: 2px;
     margin-bottom: 16px;
+    background: rgba(0,168,112,0.06);
   }
-
   h1 {
     font-size: clamp(2rem, 5vw, 3.2rem);
     font-weight: 800;
     line-height: 1.05;
     letter-spacing: -0.02em;
-    color: #fff;
+    color: var(--text);
   }
-
-  h1 span { color: var(--accent); }
-
+  h1 span { color: var(--accent2); }
   .subtitle {
     margin-top: 12px;
     color: var(--muted);
@@ -73,116 +67,143 @@
     font-family: var(--mono);
   }
 
+  /* ── Fragility Warning Banner ── */
+  .fragility-banner {
+    background: linear-gradient(135deg, #fff8e7 0%, #fff3cd 100%);
+    border: 1.5px solid #f0c040;
+    border-left: 4px solid #d97706;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 28px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    box-shadow: 0 2px 10px rgba(217,119,6,0.10);
+  }
+  .fragility-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    line-height: 1;
+    margin-top: 2px;
+  }
+  .fragility-content {}
+  .fragility-heading {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #92600a;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  .fragility-text {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: #7a4f0a;
+    line-height: 1.7;
+  }
+  .fragility-text strong {
+    color: #5a3500;
+    font-weight: 500;
+  }
+
   /* Unit toggle pill */
   .unit-toggle-wrap { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; }
   .unit-toggle-label { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
-  .unit-pill { display: flex; background: var(--surface2); border: 1px solid var(--border); border-radius: 99px; padding: 3px; gap: 2px; }
+  .unit-pill { display: flex; background: var(--surface); border: 1.5px solid var(--border); border-radius: 99px; padding: 3px; gap: 2px; box-shadow: var(--shadow); }
   .unit-pill-btn {
     background: transparent; border: none; border-radius: 99px;
     color: var(--muted); font-family: var(--mono); font-size: 12px; font-weight: 500;
     padding: 5px 14px; cursor: pointer; transition: all 0.18s;
   }
-  .unit-pill-btn.active { background: var(--accent); color: #000; }
+  .unit-pill-btn.active { background: var(--accent); color: #fff; }
 
   /* Card */
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 16px; }
-
+  .card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 24px; margin-bottom: 16px; box-shadow: var(--shadow); }
   .card-title {
     font-size: 11px; font-family: var(--mono); letter-spacing: 0.12em;
-    text-transform: uppercase; color: var(--accent); margin-bottom: 20px;
+    text-transform: uppercase; color: var(--accent2); margin-bottom: 20px;
     display: flex; align-items: center; gap: 8px;
   }
   .card-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
   .toggle-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
   .toggle-btn {
-    background: var(--surface2); border: 1px solid var(--border); color: var(--muted);
+    background: var(--surface2); border: 1.5px solid var(--border); color: var(--muted);
     padding: 14px; border-radius: 8px; font-family: var(--sans); font-size: 0.95rem;
     font-weight: 600; cursor: pointer; transition: all 0.2s; letter-spacing: 0.02em;
   }
-  .toggle-btn.active { background: var(--accent); border-color: var(--accent); color: #000; }
-
+  .toggle-btn.active { background: var(--accent2); border-color: var(--accent2); color: #fff; }
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .field { display: flex; flex-direction: column; gap: 6px; }
   label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--label); }
-
   input[type=number] {
-    background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+    background: var(--surface2); border: 1.5px solid var(--border); border-radius: 8px;
     color: var(--text); font-family: var(--mono); font-size: 1rem;
     padding: 12px 14px; width: 100%; outline: none; transition: border-color 0.2s;
     -moz-appearance: textfield;
   }
   input[type=number]::-webkit-outer-spin-button,
   input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
-  input[type=number]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,229,160,0.08); }
-
+  input[type=number]:focus { border-color: var(--accent2); box-shadow: 0 0 0 3px rgba(0,113,227,0.10); }
   .unit-hint { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 2px; }
-
   .sf-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .sf-field {
-    background: var(--surface2); border: 1px solid var(--border); border-radius: 10px;
+    background: var(--surface2); border: 1.5px solid var(--border); border-radius: 10px;
     padding: 14px; display: flex; flex-direction: column; gap: 8px; transition: border-color 0.2s;
   }
-  .sf-field:focus-within { border-color: var(--accent2); }
+  .sf-field:focus-within { border-color: var(--accent2); box-shadow: 0 0 0 3px rgba(0,113,227,0.08); }
   .sf-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--label); }
   .sf-input {
-    background: transparent; border: none; border-bottom: 1px solid var(--border);
+    background: transparent; border: none; border-bottom: 1.5px solid var(--border);
     color: var(--text); font-family: var(--mono); font-size: 1.3rem; font-weight: 500;
     padding: 4px 0; width: 100%; outline: none; -moz-appearance: textfield;
   }
   .sf-input::-webkit-outer-spin-button, .sf-input::-webkit-inner-spin-button { -webkit-appearance: none; }
   .sf-input:focus { border-bottom-color: var(--accent2); }
   .sf-unit { font-family: var(--mono); font-size: 10px; color: var(--muted); }
-
   .total-row {
     display: flex; align-items: center; justify-content: space-between;
-    background: var(--surface2); border: 1px solid var(--border);
+    background: var(--surface2); border: 1.5px solid var(--border);
     border-radius: 8px; padding: 12px 16px; margin-top: 12px;
   }
   .total-label { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
   .total-value { font-family: var(--mono); font-size: 1.4rem; font-weight: 500; color: var(--accent2); }
-
   .calc-btn {
-    width: 100%; background: var(--accent); border: none; border-radius: 10px;
-    color: #000; font-family: var(--sans); font-size: 1rem; font-weight: 700;
+    width: 100%; background: var(--accent2); border: none; border-radius: 10px;
+    color: #fff; font-family: var(--sans); font-size: 1rem; font-weight: 700;
     padding: 18px; cursor: pointer; letter-spacing: 0.04em; transition: all 0.2s; margin-top: 4px;
+    box-shadow: 0 4px 16px rgba(0,113,227,0.18);
   }
-  .calc-btn:hover { background: #00ffc0; transform: translateY(-1px); }
+  .calc-btn:hover { background: #0062c4; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,113,227,0.25); }
   .calc-btn:active { transform: translateY(0); }
-
   #results { display: none; animation: fadeUp 0.4s ease; }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
   .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   @media (max-width: 500px) { .results-grid { grid-template-columns: 1fr; } }
-
   .result-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 12px; padding: 24px; position: relative; overflow: hidden;
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: 14px; padding: 24px; position: relative; overflow: hidden;
+    box-shadow: var(--shadow);
   }
-  .result-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+  .result-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
   .result-card.bf::before  { background: linear-gradient(90deg, var(--accent2), var(--accent)); }
-  .result-card.bmi::before { background: linear-gradient(90deg, var(--accent3), #ffcc00); }
-  .result-card.ibw::before { background: linear-gradient(90deg, var(--accent), #00c8ff); }
-  .result-card.lbm::before { background: linear-gradient(90deg, #a855f7, var(--accent2)); }
-
+  .result-card.bmi::before { background: linear-gradient(90deg, var(--accent3), #f59e0b); }
+  .result-card.ibw::before { background: linear-gradient(90deg, var(--accent), #00b4d8); }
+  .result-card.lbm::before { background: linear-gradient(90deg, #7c3aed, var(--accent2)); }
   .result-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
   .result-value { font-family: var(--mono); font-size: 2.2rem; font-weight: 500; line-height: 1; margin-bottom: 4px; }
   .result-unit  { font-family: var(--mono); font-size: 11px; color: var(--muted); }
-
   .result-tag {
     display: inline-block; margin-top: 12px; padding: 4px 10px;
     border-radius: 4px; font-family: var(--mono); font-size: 11px; font-weight: 500;
   }
-
-  .cat-slim   { background: rgba(0,229,160,0.15);  color: var(--accent); }
-  .cat-ideal  { background: rgba(0,149,255,0.15);  color: var(--accent2); }
-  .cat-above  { background: rgba(255,107,53,0.15); color: var(--accent3); }
-  .cat-obese  { background: rgba(255,50,50,0.15);  color: #ff5050; }
-  .cat-under  { background: rgba(255,200,0,0.15);  color: #ffcc00; }
-  .cat-normal { background: rgba(0,229,160,0.15);  color: var(--accent); }
-  .cat-over   { background: rgba(255,107,53,0.15); color: var(--accent3); }
-
+  .cat-slim   { background: rgba(0,168,112,0.12);  color: #007a52; }
+  .cat-ideal  { background: rgba(0,113,227,0.12);  color: #0055b3; }
+  .cat-above  { background: rgba(232,82,10,0.12); color: #b83d00; }
+  .cat-obese  { background: rgba(220,38,38,0.12);  color: #b91c1c; }
+  .cat-under  { background: rgba(217,119,6,0.12);  color: #b45309; }
+  .cat-normal { background: rgba(0,168,112,0.12);  color: #007a52; }
+  .cat-over   { background: rgba(232,82,10,0.12); color: #b83d00; }
   .bf-bar-wrap { margin-top: 16px; }
   .bf-bar-label { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-bottom: 6px; }
   .bf-bar { height: 8px; background: var(--border); border-radius: 99px; overflow: hidden; }
@@ -190,36 +211,33 @@
 
   /* ── Ideal weight ── */
   .ideal-wt-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 12px; padding: 24px; margin-top: 16px;
-    position: relative; overflow: hidden;
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: 14px; padding: 24px; margin-top: 16px;
+    position: relative; overflow: hidden; box-shadow: var(--shadow);
   }
   .ideal-wt-card::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, var(--accent), var(--accent2), #a855f7);
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2), #7c3aed);
   }
   .ideal-wt-title {
     font-size: 11px; font-family: var(--mono); letter-spacing: 0.12em;
-    text-transform: uppercase; color: var(--accent); margin-bottom: 18px;
+    text-transform: uppercase; color: var(--accent2); margin-bottom: 18px;
     display: flex; align-items: center; gap: 8px;
   }
   .ideal-wt-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
   .wt-range-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
-
   .wt-range-box {
-    background: var(--surface2); border: 1px solid var(--border);
+    background: var(--surface2); border: 1.5px solid var(--border);
     border-radius: 10px; padding: 16px;
   }
-  .wt-range-box.lo { border-color: rgba(0,229,160,0.3); }
-  .wt-range-box.hi { border-color: rgba(0,149,255,0.3); }
+  .wt-range-box.lo { border-color: rgba(0,168,112,0.35); background: rgba(0,168,112,0.04); }
+  .wt-range-box.hi { border-color: rgba(0,113,227,0.35); background: rgba(0,113,227,0.04); }
   .wt-range-box-label { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 6px; }
   .wt-range-box-val   { font-family: var(--mono); font-size: 1.6rem; font-weight: 500; }
   .wt-range-box.lo .wt-range-box-val { color: var(--accent); }
   .wt-range-box.hi .wt-range-box-val { color: var(--accent2); }
   .wt-range-box-sub   { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-top: 4px; }
-
-  .wt-delta { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-bottom: 10px; line-height: 1.6; }
+  .wt-delta { font-family: var(--mono); font-size: 12px; color: var(--label); margin-bottom: 10px; line-height: 1.6; }
   .wt-delta strong { color: var(--text); }
 
   /* ── Clinical warning ── */
@@ -228,14 +246,13 @@
     padding: 16px 18px; font-family: var(--mono); font-size: 0.78rem;
     line-height: 1.7; border-left: 3px solid;
   }
-  .warn-caution { background: rgba(245,158,11,0.08); border-color: var(--warn); color: #fcd34d; }
-  .warn-info    { background: rgba(0,149,255,0.08);  border-color: var(--accent2); color: #7dd3fc; }
-  .warn-ok      { background: rgba(0,229,160,0.08);  border-color: var(--accent);  color: #6ee7b7; }
-
+  .warn-caution { background: #fffbeb; border-color: var(--warn); color: #92600a; }
+  .warn-info    { background: #eff6ff; border-color: var(--accent2); color: #1e40af; }
+  .warn-ok      { background: #f0fdf4; border-color: var(--accent); color: #166534; }
   .warn-heading { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px; font-weight: 500; opacity: 0.8; }
 
   /* ── Breakdown ── */
-  .breakdown { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-top: 16px; }
+  .breakdown { background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 24px; margin-top: 16px; box-shadow: var(--shadow); }
   .breakdown-title { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
   .breakdown-row {
     display: flex; justify-content: space-between; align-items: center;
@@ -245,24 +262,57 @@
   .breakdown-row:last-child { border-bottom: none; }
   .breakdown-key { color: var(--muted); }
   .breakdown-val { color: var(--text); font-weight: 500; }
-
   .error-msg {
-    background: rgba(255,50,50,0.1); border: 1px solid rgba(255,50,50,0.3);
+    background: #fef2f2; border: 1.5px solid #fca5a5;
     border-radius: 8px; padding: 12px 16px; font-family: var(--mono);
-    font-size: 0.85rem; color: #ff7070; display: none; margin-top: 8px;
+    font-size: 0.85rem; color: #dc2626; display: none; margin-top: 8px;
   }
-
   .divider { height: 1px; background: var(--border); margin: 32px 0; }
+
+  /* ── Results-level fragility reminder ── */
+  .results-fragility-note {
+    background: linear-gradient(135deg, #fff8e7 0%, #fff3cd 100%);
+    border: 1.5px solid #f0c040;
+    border-left: 4px solid #d97706;
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-top: 16px;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: #7a4f0a;
+    line-height: 1.7;
+    box-shadow: 0 2px 8px rgba(217,119,6,0.08);
+  }
+  .results-fragility-note .warn-heading {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: #92600a;
+    margin-bottom: 8px;
+    opacity: 1;
+  }
 </style>
 </head>
 <body>
 <div class="wrapper">
-
   <header>
     <div class="badge">Clinical Tool</div>
     <h1>Body <span>Composition</span><br>Calculator</h1>
     <p class="subtitle">// Durnin & Womersley 4-site skinfold · BMI · Ideal Body Weight</p>
   </header>
+
+  <!-- Fragility Warning Banner -->
+  <div class="fragility-banner">
+    <div class="fragility-icon">⚠️</div>
+    <div class="fragility-content">
+      <div class="fragility-heading">⚠ Always Think About the Whole Person First</div>
+      <div class="fragility-text">
+        These numbers are a <strong>starting point for a conversation,  not a prescription.</strong> Always look at the full picture before saying anything about weight.<br><br>
+        For <strong>older or more fragile patients</strong>, telling them to lose weight can actually do more harm than good. Losing weight at the wrong time can mean losing muscle, feeling weaker, and increasing the risk of falls or illness. <strong>A slightly higher weight is often perfectly fine — and sometimes even protective — in older adults.</strong> Use your judgement. The numbers are a guide, not the goal.
+      </div>
+    </div>
+  </div>
 
   <!-- Unit toggle -->
   <div class="unit-toggle-wrap">
@@ -332,12 +382,10 @@
 
   <div class="error-msg" id="errorMsg"></div>
   <button class="calc-btn" onclick="calculate()">Calculate Body Composition →</button>
-
   <div class="divider"></div>
 
   <!-- Results -->
   <div id="results">
-
     <div class="results-grid">
       <div class="result-card bf">
         <div class="result-label">Estimated Body Fat</div>
@@ -349,23 +397,20 @@
           <div class="bf-bar"><div class="bf-bar-fill" id="bfBarFill" style="width:0%"></div></div>
         </div>
       </div>
-
       <div class="result-card bmi">
         <div class="result-label">BMI</div>
-        <div class="result-value" id="rBmi" style="color:#ffcc00">—</div>
+        <div class="result-value" id="rBmi" style="color:#d97706">—</div>
         <div class="result-unit">kg / m²</div>
         <div id="rBmiTag" class="result-tag">—</div>
       </div>
-
       <div class="result-card ibw">
         <div class="result-label">Devine Ideal Body Weight</div>
         <div class="result-value" id="rIbw" style="color:var(--accent)">—</div>
         <div class="result-unit">Devine formula</div>
       </div>
-
       <div class="result-card lbm">
         <div class="result-label">Lean Body Mass</div>
-        <div class="result-value" id="rLbm" style="color:#a855f7">—</div>
+        <div class="result-value" id="rLbm" style="color:#7c3aed">—</div>
         <div class="result-unit" id="rLbmUnit">lean mass</div>
       </div>
     </div>
@@ -373,7 +418,6 @@
     <!-- Ideal weight from BF% -->
     <div class="ideal-wt-card">
       <div class="ideal-wt-title">03 — Target Weight from Ideal Body Fat Range</div>
-
       <div class="wt-range-row">
         <div class="wt-range-box lo">
           <div class="wt-range-box-label">Lower BF% target (leaner end)</div>
@@ -386,13 +430,17 @@
           <div class="wt-range-box-sub" id="iwtHiSub">—</div>
         </div>
       </div>
-
       <div class="wt-delta" id="wt-delta-text"></div>
-
       <div class="clinical-warn" id="clinicalWarn">
         <div class="warn-heading" id="warnHeading"></div>
         <span id="warnBody"></span>
       </div>
+    </div>
+
+    <!-- Fragility reminder in results -->
+    <div class="results-fragility-note">
+      <div class="warn-heading">⚠ Remember — Numbers Don't Tell the Whole Story</div>
+      The weight targets above are <strong>just estimates based on averages</strong>. Before bringing up weight with a patient, think about how they're actually doing day-to-day — their age, how mobile they are, any other health conditions, and what matters most to them. For older or frailer patients, pushing for weight loss can backfire. If you're not sure, talk it through with the rest of the team. The patient's wellbeing always comes first.
     </div>
 
     <!-- Breakdown -->
@@ -408,10 +456,9 @@
       <div class="breakdown-row"><span class="breakdown-key">Devine Ideal Body Weight</span><span class="breakdown-val" id="bIbw">—</span></div>
       <div class="breakdown-row"><span class="breakdown-key">Target Weight Range (BF%)</span><span class="breakdown-val" id="bIwt">—</span></div>
     </div>
-
   </div>
-
 </div>
+
 <script>
 // ─── DATA ──────────────────────────────────────────────────────────────────
 const SKINFOLD = {
@@ -442,7 +489,6 @@ const SKINFOLD = {
     165:[43.7,44.0,46.2,49.6],170:[44.1,44.4,46.6,50.0]
   }
 };
-
 const BF_NORMS = {
   male: [
     {range:[16,19], slim:5.3,  ideal:[5.4, 10.6], above:[10.7,15.8], obese:21.2},
@@ -459,7 +505,6 @@ const BF_NORMS = {
     {range:[50,99], slim:27.1, ideal:[27.2,32.5], above:[32.6,38.0], obese:43.4}
   ]
 };
-
 function getNorm(age, g) {
   const norms = BF_NORMS[g];
   return norms.find(n => age >= n.range[0] && age <= n.range[1]) || norms[norms.length-1];
@@ -474,16 +519,14 @@ function classifyBF(bf, norm) {
   return                          {label:'Obese',         cls:'cat-obese'};
 }
 function classifyBMI(bmi) {
-  if (bmi < 18.5) return {label:'Underweight',  cls:'cat-under'};
+  if (bmi < 18.5) return {label:'Underweight',   cls:'cat-under'};
   if (bmi < 25.0) return {label:'Normal Weight', cls:'cat-normal'};
-  if (bmi < 30.0) return {label:'Overweight',   cls:'cat-over'};
-  return                 {label:'Obese',         cls:'cat-obese'};
+  if (bmi < 30.0) return {label:'Overweight',    cls:'cat-over'};
+  return                 {label:'Obese',          cls:'cat-obese'};
 }
-
 // ─── STATE ─────────────────────────────────────────────────────────────────
 let unit   = 'kg';
 let gender = 'male';
-
 function setUnit(u) {
   const wEl = document.getElementById('weight');
   const hEl = document.getElementById('height');
@@ -502,107 +545,89 @@ function setUnit(u) {
   document.getElementById('weightHint').textContent = u === 'kg' ? 'kilograms' : 'pounds';
   document.getElementById('heightHint').textContent = u === 'kg' ? 'centimetres' : 'inches';
 }
-
 function setGender(g) {
   gender = g;
   document.getElementById('btnMale').classList.toggle('active',   g === 'male');
   document.getElementById('btnFemale').classList.toggle('active', g === 'female');
 }
-
 function updateTotal() {
   const vals  = ['sf1','sf2','sf3','sf4'].map(id => parseFloat(document.getElementById(id).value)||0);
   const total = vals.reduce((a,b)=>a+b,0);
   document.getElementById('totalDisplay').textContent = total > 0 ? total.toFixed(1)+' mm' : '—';
 }
-
-// Format a kg value for display in the current unit
 function fmt(kg, dec=1) {
   return unit === 'lbs'
     ? (kg * 2.20462).toFixed(dec) + ' lbs'
     : kg.toFixed(dec) + ' kg';
 }
-
 function showError(msg) { const e=document.getElementById('errorMsg'); e.textContent=msg; e.style.display='block'; }
 function hideError()    { document.getElementById('errorMsg').style.display='none'; }
 
 // ─── CLINICAL WARNINGS ─────────────────────────────────────────────────────
 function buildWarning(bfCatLabel, deltaHi, deltaLo, weight_kg) {
-  // deltaHi = kg above upper-ideal boundary (positive means needs to lose)
-  // deltaLo = kg above lower-ideal boundary
-  const wEl      = document.getElementById('clinicalWarn');
-  const headEl   = document.getElementById('warnHeading');
-  const bodyEl   = document.getElementById('warnBody');
-
+  const wEl    = document.getElementById('clinicalWarn');
+  const headEl = document.getElementById('warnHeading');
+  const bodyEl = document.getElementById('warnBody');
   let cls='', heading='', body='';
-
   if (bfCatLabel === 'Obese') {
     const milestone = fmt(weight_kg * 0.05);
     cls     = 'warn-caution';
-    heading = '⚠ Clinical Note — Significant Reduction Indicated';
-    body    = `This patient is classified as <strong>Obese</strong>. The ideal weight targets above represent a <em>long-term goal</em> — presenting the full gap immediately risks discouraging the patient.\n\n`
-            + `Recommended approach: frame an initial milestone of <strong>5% of current body weight</strong> (~${milestone}) as the first target, then reassess. A realistic rate of fat loss is 0.25–0.5 kg/week. Celebrate early progress and avoid emphasising the full reduction needed.`;
+    heading = '⚠ Note — A Small First Step Goes a Long Way';
+    body    = `This patient's body fat is in the <strong>high range</strong>. The target weights above are a <em>long-term aim</em> — don't share the full gap all at once, as it can feel overwhelming and put people off.\n\n`
+            + `A good approach: start by aiming for just <strong>5% of their current weight</strong> (~${milestone}). That small change already brings real health benefits. Check back in after a few weeks and go from there. Progress matters more than perfection.`;
   } else if (bfCatLabel === 'Above Average') {
     if (deltaLo > 15) {
       cls     = 'warn-caution';
-      heading = '⚠ Clinical Note — Moderate-to-Large Reduction Recommended';
-      body    = `Body fat is <strong>above average</strong> and the gap to the lean ideal boundary is ${fmt(deltaLo)} — a substantial change.\n\n`
-              + `Prioritise the upper ideal boundary (${fmt(deltaHi)} to lose) as a first achievable milestone. Resistance training should be emphasised to preserve lean mass during the reduction phase. Avoid discouraging the patient by leading with the maximum reduction figure.`;
+      heading = '⚠ Note — A Step-by-Step Approach Works Best';
+      body    = `Body fat is <strong>above the healthy range</strong> and there's a fair bit of ground to cover (${fmt(deltaLo)} to reach the leaner end).\n\n`
+              + `Focus on the closer target first — getting to ${fmt(iwtHi_kg ? iwtHi_kg : deltaHi)} is a much more motivating starting point. Strength-based exercise alongside any changes to eating helps protect muscle while losing fat.`;
     } else {
       cls     = 'warn-info';
-      heading = 'ℹ Clinical Note — Moderate Reduction Recommended';
-      body    = `Body fat is <strong>above average</strong> for this age group. Reaching the upper end of the ideal range requires losing approximately <strong>${fmt(deltaHi)}</strong> — a realistic, near-term goal.\n\n`
-              + `Encourage a moderate caloric deficit combined with resistance training to preserve lean mass. Reassess in 6–8 weeks.`;
+      heading = 'ℹ Note — A Modest Change Would Help';
+      body    = `Body fat is <strong>a bit above the healthy range</strong> for this age group. Getting to the easier target only means losing around <strong>${fmt(deltaHi)}</strong> — very achievable.\n\n`
+              + `Small, consistent changes to diet and some regular movement is usually enough. Check back in after 6–8 weeks to see how things are going.`;
     }
   } else if (bfCatLabel === 'Slim') {
     cls     = 'warn-caution';
-    heading = '⚠ Clinical Note — Below Ideal Body Fat Range';
-    body    = `Body fat is <strong>below the ideal range</strong> for this patient's age and sex. A weight or fat loss goal is <em>not appropriate</em> here.\n\n`
-            + `Consider focusing on lean mass development through resistance training and adequate caloric intake. Screen for signs of under-fuelling. The weight targets above reflect the ideal BF% range for reference only — they should <em>not</em> be framed as a reduction goal for this patient.`;
+    heading = '⚠ Note — Weight Loss Is Not the Goal Here';
+    body    = `Body fat is <strong>below the healthy range</strong> for this patient's age and sex. Encouraging any weight loss here would not be appropriate.\n\n`
+            + `The focus should be on building strength and making sure they're eating enough. Watch for any signs that they may not be getting enough food or energy day-to-day.`;
   } else {
     cls     = 'warn-ok';
-    heading = '✓ Clinical Note — Within Ideal Range';
-    body    = `Body fat is within the <strong>ideal range</strong> for this patient's age and sex. No fat-loss intervention is required.\n\n`
-            + `Recommendations should focus on maintenance: balanced nutrition, regular activity, and preserving lean body mass over time. Schedule a routine reassessment in 3–6 months.`;
+    heading = '✓ Note — Looking Good — Keep It Up';
+    body    = `Body fat is <strong>in the healthy range</strong> for this patient's age and sex. No changes to weight are needed.\n\n`
+            + `The advice here is simply to keep doing what's working — eating well, staying active, and looking after their muscle as they get older. A routine check-in every 3–6 months is plenty.`;
   }
-
-  wEl.className          = 'clinical-warn ' + cls;
-  headEl.textContent     = heading;
-  bodyEl.innerHTML       = body.replace(/\n\n/g,'<br><br>');
-  wEl.style.display      = 'block';
+  wEl.className      = 'clinical-warn ' + cls;
+  headEl.textContent = heading;
+  bodyEl.innerHTML   = body.replace(/\n\n/g,'<br><br>');
+  wEl.style.display  = 'block';
 }
 
 // ─── CALCULATE ─────────────────────────────────────────────────────────────
 function calculate() {
   hideError();
-
-  const age   = parseInt(document.getElementById('age').value);
-  const wInp  = parseFloat(document.getElementById('weight').value);
-  const hInp  = parseFloat(document.getElementById('height').value);
-  const sf1   = parseFloat(document.getElementById('sf1').value);
-  const sf2   = parseFloat(document.getElementById('sf2').value);
-  const sf3   = parseFloat(document.getElementById('sf3').value);
-  const sf4   = parseFloat(document.getElementById('sf4').value);
-
+  const age  = parseInt(document.getElementById('age').value);
+  const wInp = parseFloat(document.getElementById('weight').value);
+  const hInp = parseFloat(document.getElementById('height').value);
+  const sf1  = parseFloat(document.getElementById('sf1').value);
+  const sf2  = parseFloat(document.getElementById('sf2').value);
+  const sf3  = parseFloat(document.getElementById('sf3').value);
+  const sf4  = parseFloat(document.getElementById('sf4').value);
   if (!age || !wInp || !hInp || isNaN(sf1)||isNaN(sf2)||isNaN(sf3)||isNaN(sf4)) {
     showError('Please fill in all fields before calculating.'); return;
   }
-
-  // Normalise to kg / cm
   const weight_kg = unit === 'lbs' ? wInp / 2.20462 : wInp;
   const height_cm = unit === 'lbs' ? hInp * 2.54    : hInp;
-
   if (age < 16 || age > 100)            { showError('Age must be between 16 and 100.'); return; }
   if (height_cm < 100||height_cm > 250) { showError('Height seems out of range (100–250 cm).'); return; }
   if (weight_kg < 25 ||weight_kg > 350) { showError('Weight seems out of range.'); return; }
-
-  // Skinfold lookup
   const totalSF = sf1+sf2+sf3+sf4;
   const ageCol  = getAgeCol(age);
   const table   = SKINFOLD[gender];
   const sfKeys  = Object.keys(table).map(Number).sort((a,b)=>a-b);
   const maxSF   = sfKeys[sfKeys.length-1];
   const minSF   = sfKeys[0];
-
   let lowerSF, upperSF;
   if      (totalSF <= minSF) { lowerSF=minSF;                   upperSF=sfKeys[1]; }
   else if (totalSF >= maxSF) { lowerSF=sfKeys[sfKeys.length-2]; upperSF=maxSF; }
@@ -612,15 +637,11 @@ function calculate() {
     if (!table[lowerSF]) lowerSF=sfKeys.find(k=>k>=lowerSF);
     if (!table[upperSF]) upperSF=sfKeys.find(k=>k>=upperSF);
   }
-
   const bfLow  = table[lowerSF]?.[ageCol];
   const bfHigh = table[upperSF]?.[ageCol];
   if (bfLow==null||bfHigh==null) { showError(`No data for skinfold range ${lowerSF}–${upperSF} mm in this age group.`); return; }
-
   const stepPerMm = (bfHigh-bfLow)/5;
   const bf        = bfLow + stepPerMm*(totalSF-lowerSF);
-
-  // Derived values (all in kg internally)
   const heightM  = height_cm/100;
   const bmi      = weight_kg/(heightM*heightM);
   const heightIn = height_cm/2.54;
@@ -628,40 +649,29 @@ function calculate() {
   ibw = Math.max(ibw,30);
   const fatMass  = weight_kg*(bf/100);
   const leanMass = weight_kg-fatMass;
-
-  // Classify
-  const norm    = getNorm(age, gender);
-  const bfCat   = classifyBF(bf, norm);
-  const bmiCat  = classifyBMI(bmi);
-
-  // Ideal weight from BF%: target_weight = leanMass / (1 - targetBF/100)
+  const norm   = getNorm(age, gender);
+  const bfCat  = classifyBF(bf, norm);
+  const bmiCat = classifyBMI(bmi);
   const idealBfLo = norm.ideal[0];
   const idealBfHi = norm.ideal[1];
   const iwtLo_kg  = leanMass / (1 - idealBfLo/100);
   const iwtHi_kg  = leanMass / (1 - idealBfHi/100);
-  const deltaHi   = weight_kg - iwtHi_kg;  // gap to upper (easier) ideal bound
-  const deltaLo   = weight_kg - iwtLo_kg;  // gap to lower (leaner) ideal bound
-
-  // ── Render ──
+  const deltaHi   = weight_kg - iwtHi_kg;
+  const deltaLo   = weight_kg - iwtLo_kg;
+  // Render
   document.getElementById('rBf').textContent  = bf.toFixed(2)+'%';
   document.getElementById('rBmi').textContent = bmi.toFixed(1);
   document.getElementById('rIbw').textContent = fmt(ibw);
   document.getElementById('rLbm').textContent = fmt(leanMass);
-
   const bfTag = document.getElementById('rBfTag');
   bfTag.textContent=bfCat.label; bfTag.className='result-tag '+bfCat.cls;
   const bmiTag = document.getElementById('rBmiTag');
   bmiTag.textContent=bmiCat.label; bmiTag.className='result-tag '+bmiCat.cls;
-
   document.getElementById('bfBarFill').style.width = Math.min(bf/50*100,100)+'%';
-
-  // Ideal weight boxes
   document.getElementById('iwtLo').textContent    = fmt(iwtLo_kg);
   document.getElementById('iwtLoSub').textContent = `at ${idealBfLo}% BF (leaner end)`;
   document.getElementById('iwtHi').textContent    = fmt(iwtHi_kg);
   document.getElementById('iwtHiSub').textContent = `at ${idealBfHi}% BF (easier goal)`;
-
-  // Delta sentence
   let deltaHtml='';
   if (deltaHi > 0) {
     deltaHtml = `Patient is currently <strong>${fmt(deltaHi)}</strong> above the easier ideal boundary and <strong>${fmt(deltaLo)}</strong> above the leaner ideal boundary — based on a lean mass of ${fmt(leanMass)}.`;
@@ -671,11 +681,7 @@ function calculate() {
     deltaHtml = `Patient is already <strong>${fmt(Math.abs(deltaLo))}</strong> below the leaner ideal boundary. No reduction target is appropriate.`;
   }
   document.getElementById('wt-delta-text').innerHTML = deltaHtml;
-
-  // Clinical warning
   buildWarning(bfCat.label, deltaHi, deltaLo, weight_kg);
-
-  // Breakdown
   document.getElementById('bTotal').textContent    = totalSF.toFixed(1)+' mm';
   document.getElementById('bLower').textContent    = `${lowerSF} mm → ${bfLow.toFixed(1)}% BF`;
   document.getElementById('bUpper').textContent    = `${upperSF} mm → ${bfHigh.toFixed(1)}% BF`;
@@ -685,7 +691,6 @@ function calculate() {
   document.getElementById('bBmi').textContent      = `${bmi.toFixed(2)} kg/m² — ${bmiCat.label}`;
   document.getElementById('bIbw').textContent      = fmt(ibw);
   document.getElementById('bIwt').textContent      = `${fmt(iwtHi_kg)} – ${fmt(iwtLo_kg)}`;
-
   const res = document.getElementById('results');
   res.style.display='block';
   setTimeout(()=>res.scrollIntoView({behavior:'smooth',block:'start'}),100);
