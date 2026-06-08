@@ -66,7 +66,6 @@
     font-size: 0.9rem;
     font-family: var(--mono);
   }
-
   /* ── Fragility Warning Banner ── */
   .fragility-banner {
     background: linear-gradient(135deg, #fff8e7 0%, #fff3cd 100%);
@@ -106,7 +105,6 @@
     color: #5a3500;
     font-weight: 500;
   }
-
   /* Unit toggle pill */
   .unit-toggle-wrap { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; }
   .unit-toggle-label { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
@@ -117,7 +115,6 @@
     padding: 5px 14px; cursor: pointer; transition: all 0.18s;
   }
   .unit-pill-btn.active { background: var(--accent); color: #fff; }
-
   /* Card */
   .card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 24px; margin-bottom: 16px; box-shadow: var(--shadow); }
   .card-title {
@@ -208,7 +205,6 @@
   .bf-bar-label { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-bottom: 6px; }
   .bf-bar { height: 8px; background: var(--border); border-radius: 99px; overflow: hidden; }
   .bf-bar-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--accent2), var(--accent)); transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
-
   /* ── Ideal weight ── */
   .ideal-wt-card {
     background: var(--surface); border: 1.5px solid var(--border);
@@ -239,7 +235,80 @@
   .wt-range-box-sub   { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-top: 4px; }
   .wt-delta { font-family: var(--mono); font-size: 12px; color: var(--label); margin-bottom: 10px; line-height: 1.6; }
   .wt-delta strong { color: var(--text); }
-
+  /* ── Adjustable BF% range slider ── */
+  .bf-slider-block {
+    background: var(--surface2); border: 1.5px solid var(--border);
+    border-radius: 12px; padding: 18px 20px 14px; margin-bottom: 18px;
+  }
+  .bf-slider-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; margin-bottom: 18px;
+  }
+  .bf-slider-head-label {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--label);
+  }
+  .bf-reset-btn {
+    background: transparent; border: 1.5px solid var(--border);
+    color: var(--accent2); font-family: var(--mono); font-size: 10px;
+    letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500;
+    padding: 5px 10px; border-radius: 6px; cursor: pointer; transition: all 0.18s;
+    white-space: nowrap;
+  }
+  .bf-reset-btn:hover { background: var(--surface); border-color: var(--accent2); }
+  /* dual-thumb range slider */
+  .dual-slider { position: relative; height: 36px; margin: 4px 6px 0; }
+  .dual-slider .slider-track {
+    position: absolute; top: 50%; left: 0; right: 0; transform: translateY(-50%);
+    height: 6px; background: var(--border); border-radius: 99px;
+  }
+  .dual-slider .slider-range {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    height: 6px; border-radius: 99px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+  }
+  .dual-slider input[type=range] {
+    position: absolute; top: 0; left: 0; width: 100%; height: 36px; margin: 0;
+    -webkit-appearance: none; appearance: none; background: transparent;
+    pointer-events: none; outline: none;
+  }
+  .dual-slider input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none; pointer-events: auto;
+    height: 22px; width: 22px; border-radius: 50%; background: var(--surface);
+    border: 2.5px solid var(--accent2); cursor: grab; margin-top: 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.18); transition: transform 0.12s;
+  }
+  .dual-slider input[type=range]::-webkit-slider-thumb:active { cursor: grabbing; transform: scale(1.12); }
+  .dual-slider input[type=range]#bfLoSlider::-webkit-slider-thumb { border-color: var(--accent); }
+  .dual-slider input[type=range]::-moz-range-thumb {
+    pointer-events: auto; height: 22px; width: 22px; border-radius: 50%;
+    background: var(--surface); border: 2.5px solid var(--accent2); cursor: grab;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+  }
+  .dual-slider input[type=range]#bfLoSlider::-moz-range-thumb { border-color: var(--accent); }
+  .dual-slider input[type=range]::-moz-range-track { background: transparent; }
+  .dual-slider input[type=range]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 4px rgba(0,113,227,0.25); }
+  .bf-slider-scale {
+    display: flex; justify-content: space-between;
+    font-family: var(--mono); font-size: 9px; color: var(--muted);
+    margin: 0 6px 14px; letter-spacing: 0.04em;
+  }
+  .bf-slider-vals { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .bf-slider-val-box {
+    border-radius: 8px; padding: 8px 12px; text-align: center;
+    font-family: var(--mono);
+  }
+  .bf-slider-val-box.lo { background: rgba(0,168,112,0.08); border: 1.5px solid rgba(0,168,112,0.30); }
+  .bf-slider-val-box.hi { background: rgba(0,113,227,0.08); border: 1.5px solid rgba(0,113,227,0.30); }
+  .bf-slider-val-cap { font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+  .bf-slider-val-num { font-size: 1.25rem; font-weight: 500; margin-top: 2px; }
+  .bf-slider-val-box.lo .bf-slider-val-num { color: var(--accent); }
+  .bf-slider-val-box.hi .bf-slider-val-num { color: var(--accent2); }
+  .bf-slider-rec {
+    font-family: var(--mono); font-size: 10px; color: var(--muted);
+    margin-top: 12px; text-align: center; letter-spacing: 0.03em;
+  }
+  .bf-slider-rec strong { color: var(--label); font-weight: 500; }
   /* ── Clinical warning ── */
   .clinical-warn {
     display: none; margin-top: 14px; border-radius: 10px;
@@ -250,7 +319,6 @@
   .warn-info    { background: #eff6ff; border-color: var(--accent2); color: #1e40af; }
   .warn-ok      { background: #f0fdf4; border-color: var(--accent); color: #166534; }
   .warn-heading { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px; font-weight: 500; opacity: 0.8; }
-
   /* ── Breakdown ── */
   .breakdown { background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 24px; margin-top: 16px; box-shadow: var(--shadow); }
   .breakdown-title { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
@@ -276,7 +344,6 @@
     letter-spacing: 0;
   }
   .divider { height: 1px; background: var(--border); margin: 32px 0; }
-
   /* ── Results-level fragility reminder ── */
   .results-fragility-note {
     background: linear-gradient(135deg, #fff8e7 0%, #fff3cd 100%);
@@ -300,7 +367,6 @@
     margin-bottom: 8px;
     opacity: 1;
   }
-
   /* ── Quick Converter ── */
   .converter-strip {
     background: var(--surface); border: 1.5px solid var(--border);
@@ -328,7 +394,6 @@
     <div class="badge">Clinical Tool</div>
     <h1>Body <span>Composition</span><br>Calculator</h1>
   </header>
-
   <!-- Fragility Warning Banner -->
   <div class="fragility-banner">
     <div class="fragility-icon">⚠️</div>
@@ -340,7 +405,6 @@
       </div>
     </div>
   </div>
-
   <!-- Unit toggle -->
   <div class="unit-toggle-wrap">
     <span class="unit-toggle-label">Units:</span>
@@ -349,8 +413,6 @@
       <button class="unit-pill-btn"        id="btnLbs" onclick="setUnit('lbs')">lbs / in</button>
     </div>
   </div>
-
-
   <!-- Live unit converter -->
   <div class="converter-strip" id="converterStrip">
     <div class="conv-title">Quick Converter</div>
@@ -377,7 +439,6 @@
       </div>
     </div>
   </div>
-
   <!-- Profile -->
   <div class="card">
     <div class="card-title">01 — Patient Profile</div>
@@ -403,7 +464,6 @@
       </div>
     </div>
   </div>
-
   <!-- Skinfolds -->
   <div class="card">
     <div class="card-title">02 — Skinfold Measurements (Right Side)</div>
@@ -434,11 +494,9 @@
       <span class="total-value" id="totalDisplay">—</span>
     </div>
   </div>
-
   <div class="error-msg" id="errorMsg"></div>
   <button class="calc-btn" onclick="calculate()">Calculate Body Composition →</button>
   <div class="divider"></div>
-
   <!-- Results -->
   <div id="results">
     <div class="results-grid">
@@ -469,18 +527,47 @@
         <div class="result-unit" id="rLbmUnit">lean mass</div>
       </div>
     </div>
-
     <!-- Ideal weight from BF% -->
     <div class="ideal-wt-card">
-      <div class="ideal-wt-title">03 — Target Weight from Ideal Body Fat Range</div>
+      <div class="ideal-wt-title">03 — Target Weight from Body Fat % Range</div>
+
+      <!-- Adjustable BF% slider -->
+      <div class="bf-slider-block">
+        <div class="bf-slider-head">
+          <span class="bf-slider-head-label">Adjust BF% targets to fit clinical history</span>
+          <button class="bf-reset-btn" onclick="resetBfRange()">↺ Reset to recommended</button>
+        </div>
+        <div class="dual-slider" id="dualSlider">
+          <div class="slider-track"></div>
+          <div class="slider-range" id="sliderRange"></div>
+          <input type="range" id="bfLoSlider" min="4" max="50" step="0.5" value="10" oninput="onSlider('lo')">
+          <input type="range" id="bfHiSlider" min="4" max="50" step="0.5" value="20" oninput="onSlider('hi')">
+        </div>
+        <div class="bf-slider-scale">
+          <span id="scaleMin">4%</span>
+          <span id="scaleMax">50%</span>
+        </div>
+        <div class="bf-slider-vals">
+          <div class="bf-slider-val-box lo">
+            <div class="bf-slider-val-cap">Lower target (leaner end)</div>
+            <div class="bf-slider-val-num"><span id="bfLoVal">—</span>%</div>
+          </div>
+          <div class="bf-slider-val-box hi">
+            <div class="bf-slider-val-cap">Upper target (easier end)</div>
+            <div class="bf-slider-val-num"><span id="bfHiVal">—</span>%</div>
+          </div>
+        </div>
+        <div class="bf-slider-rec" id="bfRecNote">—</div>
+      </div>
+
       <div class="wt-range-row">
         <div class="wt-range-box lo">
-          <div class="wt-range-box-label">Lower BF% target (leaner end)</div>
+          <div class="wt-range-box-label">Weight at lower BF% target</div>
           <div class="wt-range-box-val" id="iwtLo">—</div>
           <div class="wt-range-box-sub" id="iwtLoSub">—</div>
         </div>
         <div class="wt-range-box hi">
-          <div class="wt-range-box-label">Upper BF% target (easier end)</div>
+          <div class="wt-range-box-label">Weight at upper BF% target</div>
           <div class="wt-range-box-val" id="iwtHi">—</div>
           <div class="wt-range-box-sub" id="iwtHiSub">—</div>
         </div>
@@ -491,13 +578,11 @@
         <span id="warnBody"></span>
       </div>
     </div>
-
     <!-- Fragility reminder in results -->
     <div class="results-fragility-note">
       <div class="warn-heading">⚠ Remember — Numbers Don't Tell the Whole Story</div>
       The weight targets above are <strong>just estimates based on averages</strong>. Before bringing up weight with a patient, think about how they're actually doing day-to-day — their age, how mobile they are, any other health conditions, and what matters most to them. For older or frailer patients, pushing for weight loss can backfire. If you're not sure, talk it through with the rest of the team. The patient's wellbeing always comes first.
     </div>
-
     <!-- Breakdown -->
     <div class="breakdown">
       <div class="breakdown-title">// Calculation Breakdown</div>
@@ -513,7 +598,6 @@
     </div>
   </div>
 </div>
-
 <script>
 // ─── DATA ──────────────────────────────────────────────────────────────────
 const SKINFOLD = {
@@ -582,6 +666,13 @@ function classifyBMI(bmi) {
 // ─── STATE ─────────────────────────────────────────────────────────────────
 let unit   = 'kg';
 let gender = 'male';
+// live state for the adjustable target slider
+let curLeanMass = 0;   // kg
+let curWeightKg = 0;   // kg
+let sliderMin   = 4;   // %BF lower bound of slider
+let sliderMax   = 50;  // %BF upper bound of slider
+let recLo       = 0;   // recommended leaner-end %BF (age/sex norm)
+let recHi       = 0;   // recommended easier-end %BF (age/sex norm)
 function setUnit(u) {
   const wEl = document.getElementById('weight');
   const hEl = document.getElementById('height');
@@ -599,6 +690,10 @@ function setUnit(u) {
   document.getElementById('btnLbs').classList.toggle('active', u === 'lbs');
   document.getElementById('weightHint').textContent = u === 'kg' ? 'kilograms' : 'pounds';
   document.getElementById('heightHint').textContent = u === 'kg' ? 'centimetres' : 'inches';
+  // if results are already on screen, re-render weight figures in the new unit
+  if (document.getElementById('results').style.display === 'block' && curLeanMass > 0) {
+    updateTargetFromSlider();
+  }
 }
 function setGender(g) {
   gender = g;
@@ -624,7 +719,6 @@ function fmtPlain(kg, dec=1) {
 }
 function showError(msg) { const e=document.getElementById('errorMsg'); e.textContent=msg; e.style.display='block'; }
 function hideError()    { document.getElementById('errorMsg').style.display='none'; }
-
 // ─── CLINICAL WARNINGS ─────────────────────────────────────────────────────
 function buildWarning(bfCatLabel, deltaHi, deltaLo, weight_kg) {
   const wEl    = document.getElementById('clinicalWarn');
@@ -642,7 +736,7 @@ function buildWarning(bfCatLabel, deltaHi, deltaLo, weight_kg) {
       cls     = 'warn-caution';
       heading = '⚠ Note — A Step-by-Step Approach Works Best';
       body    = `Body fat is <strong>above the healthy range</strong> and there's a fair bit of ground to cover (${fmt(deltaLo)} to reach the leaner end).\n\n`
-              + `Focus on the closer target first — getting to ${fmt(iwtHi_kg ? iwtHi_kg : deltaHi)} is a much more motivating starting point. Strength-based exercise alongside any changes to eating helps protect muscle while losing fat.`;
+              + `Focus on the closer target first — the easier end is a much more motivating starting point. Strength-based exercise alongside any changes to eating helps protect muscle while losing fat.`;
     } else {
       cls     = 'warn-info';
       heading = 'ℹ Note — A Modest Change Would Help';
@@ -665,7 +759,70 @@ function buildWarning(bfCatLabel, deltaHi, deltaLo, weight_kg) {
   bodyEl.innerHTML   = body.replace(/\n\n/g,'<br><br>');
   wEl.style.display  = 'block';
 }
-
+// ─── ADJUSTABLE TARGET SLIDER ──────────────────────────────────────────────
+// Weight at a given target body-fat %, holding lean mass constant:
+//   weight = leanMass / (1 - bf/100)
+function weightAtBf(bfPct) {
+  return curLeanMass / (1 - bfPct / 100);
+}
+function positionSliderFill() {
+  const lo = parseFloat(document.getElementById('bfLoSlider').value);
+  const hi = parseFloat(document.getElementById('bfHiSlider').value);
+  const span = sliderMax - sliderMin || 1;
+  const loPct = (lo - sliderMin) / span * 100;
+  const hiPct = (hi - sliderMin) / span * 100;
+  const r = document.getElementById('sliderRange');
+  r.style.left  = loPct + '%';
+  r.style.width = (hiPct - loPct) + '%';
+}
+// keep the two thumbs from crossing (min 0.5% gap)
+function onSlider(which) {
+  const loEl = document.getElementById('bfLoSlider');
+  const hiEl = document.getElementById('bfHiSlider');
+  let lo = parseFloat(loEl.value);
+  let hi = parseFloat(hiEl.value);
+  const gap = 0.5;
+  if (lo > hi - gap) {
+    if (which === 'lo') { lo = hi - gap; loEl.value = lo; }
+    else                { hi = lo + gap; hiEl.value = hi; }
+  }
+  updateTargetFromSlider();
+}
+function resetBfRange() {
+  document.getElementById('bfLoSlider').value = recLo;
+  document.getElementById('bfHiSlider').value = recHi;
+  updateTargetFromSlider();
+}
+// recompute everything that depends on the slider's two BF% targets
+function updateTargetFromSlider() {
+  const lo = parseFloat(document.getElementById('bfLoSlider').value);
+  const hi = parseFloat(document.getElementById('bfHiSlider').value);
+  const wLo = weightAtBf(lo);   // leaner end -> lower weight
+  const wHi = weightAtBf(hi);   // easier end -> higher weight
+  // slider readouts
+  document.getElementById('bfLoVal').textContent = lo.toFixed(1);
+  document.getElementById('bfHiVal').textContent = hi.toFixed(1);
+  // weight boxes
+  document.getElementById('iwtLo').innerHTML      = fmt(wLo);
+  document.getElementById('iwtLoSub').textContent = `at ${lo.toFixed(1)}% BF`;
+  document.getElementById('iwtHi').innerHTML      = fmt(wHi);
+  document.getElementById('iwtHiSub').textContent = `at ${hi.toFixed(1)}% BF`;
+  // delta narrative (relative to the selected targets)
+  const dHi = curWeightKg - wHi;
+  const dLo = curWeightKg - wLo;
+  let deltaHtml = '';
+  if (dHi > 0) {
+    deltaHtml = `Patient is currently <strong>${fmt(dHi)}</strong> above the easier (upper) target and <strong>${fmt(dLo)}</strong> above the leaner (lower) target — based on a lean mass of ${fmt(curLeanMass)}.`;
+  } else if (dLo > 0) {
+    deltaHtml = `Patient is within the selected target range. Currently <strong>${fmt(Math.abs(dLo))}</strong> above the leaner (lower) target.`;
+  } else {
+    deltaHtml = `Patient is already <strong>${fmt(Math.abs(dLo))}</strong> below the leaner (lower) target. No reduction target is appropriate.`;
+  }
+  document.getElementById('wt-delta-text').innerHTML = deltaHtml;
+  // breakdown row
+  document.getElementById('bIwt').textContent = `${fmtPlain(wHi)} – ${fmtPlain(wLo)}`;
+  positionSliderFill();
+}
 // ─── CALCULATE ─────────────────────────────────────────────────────────────
 function calculate() {
   hideError();
@@ -716,11 +873,12 @@ function calculate() {
   const bmiCat = classifyBMI(bmi);
   const idealBfLo = norm.ideal[0];
   const idealBfHi = norm.ideal[1];
-  const iwtLo_kg  = leanMass / (1 - idealBfLo/100);
-  const iwtHi_kg  = leanMass / (1 - idealBfHi/100);
-  const deltaHi   = weight_kg - iwtHi_kg;
-  const deltaLo   = weight_kg - iwtLo_kg;
-  // Render
+  // recommended target weights (used only for the clinical warning copy)
+  const recIwtLo = leanMass / (1 - idealBfLo/100);
+  const recIwtHi = leanMass / (1 - idealBfHi/100);
+  const recDeltaHi = weight_kg - recIwtHi;
+  const recDeltaLo = weight_kg - recIwtLo;
+  // Render the fixed result cards
   document.getElementById('rBf').textContent  = bf.toFixed(2)+'%';
   document.getElementById('rBmi').textContent = bmi.toFixed(1);
   document.getElementById('rIbw').innerHTML = fmt(ibw);
@@ -730,20 +888,32 @@ function calculate() {
   const bmiTag = document.getElementById('rBmiTag');
   bmiTag.textContent=bmiCat.label; bmiTag.className='result-tag '+bmiCat.cls;
   document.getElementById('bfBarFill').style.width = Math.min(bf/50*100,100)+'%';
-  document.getElementById('iwtLo').innerHTML    = fmt(iwtLo_kg);
-  document.getElementById('iwtLoSub').textContent = `at ${idealBfLo}% BF (leaner end)`;
-  document.getElementById('iwtHi').innerHTML    = fmt(iwtHi_kg);
-  document.getElementById('iwtHiSub').textContent = `at ${idealBfHi}% BF (easier goal)`;
-  let deltaHtml='';
-  if (deltaHi > 0) {
-    deltaHtml = `Patient is currently <strong>${fmt(deltaHi)}</strong> above the easier ideal boundary and <strong>${fmt(deltaLo)}</strong> above the leaner ideal boundary — based on a lean mass of ${fmt(leanMass)}.`;
-  } else if (deltaLo > 0) {
-    deltaHtml = `Patient is within the ideal BF% range. Currently <strong>${fmt(Math.abs(deltaLo))}</strong> above the leaner ideal boundary.`;
-  } else {
-    deltaHtml = `Patient is already <strong>${fmt(Math.abs(deltaLo))}</strong> below the leaner ideal boundary. No reduction target is appropriate.`;
-  }
-  document.getElementById('wt-delta-text').innerHTML = deltaHtml;
-  buildWarning(bfCat.label, deltaHi, deltaLo, weight_kg);
+  // ── Configure the adjustable BF% slider ──
+  curLeanMass = leanMass;
+  curWeightKg = weight_kg;
+  recLo = idealBfLo;
+  recHi = idealBfHi;
+  // sensible slider bounds (essential fat -> well above the obese threshold)
+  sliderMin = gender === 'male' ? 4  : 10;
+  sliderMax = gender === 'male' ? 45 : 50;
+  // make sure the recommended values fit inside the slider bounds
+  sliderMin = Math.min(sliderMin, Math.floor(idealBfLo) - 1);
+  sliderMax = Math.max(sliderMax, Math.ceil(norm.obese) + 4);
+  const loS = document.getElementById('bfLoSlider');
+  const hiS = document.getElementById('bfHiSlider');
+  loS.min = sliderMin; loS.max = sliderMax;
+  hiS.min = sliderMin; hiS.max = sliderMax;
+  loS.value = idealBfLo;
+  hiS.value = idealBfHi;
+  document.getElementById('scaleMin').textContent = sliderMin + '%';
+  document.getElementById('scaleMax').textContent = sliderMax + '%';
+  document.getElementById('bfRecNote').innerHTML =
+    `Recommended for this patient (age/sex norm): <strong>${idealBfLo}% – ${idealBfHi}% BF</strong>`;
+  // clinical warning uses the recommended (norm) deltas
+  buildWarning(bfCat.label, recDeltaHi, recDeltaLo, weight_kg);
+  // populate the weight boxes / delta / breakdown from the slider (starts at recommended)
+  updateTargetFromSlider();
+  // remaining breakdown rows
   document.getElementById('bTotal').textContent    = totalSF.toFixed(1)+' mm';
   document.getElementById('bLower').textContent    = `${lowerSF} mm → ${bfLow.toFixed(1)}% BF`;
   document.getElementById('bUpper').textContent    = `${upperSF} mm → ${bfHigh.toFixed(1)}% BF`;
@@ -752,12 +922,10 @@ function calculate() {
   document.getElementById('bLeanMass').textContent = fmtPlain(leanMass);
   document.getElementById('bBmi').textContent      = `${bmi.toFixed(2)} kg/m² — ${bmiCat.label}`;
   document.getElementById('bIbw').textContent      = fmtPlain(ibw);
-  document.getElementById('bIwt').textContent      = `${fmtPlain(iwtHi_kg)} – ${fmtPlain(iwtLo_kg)}`;
   const res = document.getElementById('results');
   res.style.display='block';
   setTimeout(()=>res.scrollIntoView({behavior:'smooth',block:'start'}),100);
 }
-
 // ─── QUICK CONVERTER ───────────────────────────────────────────────────────
 function convFrom(src) {
   const kgEl  = document.getElementById('convKg');
